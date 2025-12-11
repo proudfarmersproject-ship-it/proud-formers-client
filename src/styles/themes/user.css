@@ -1,0 +1,45 @@
+@import "tailwindcss";
+/* @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Montserrat:wght@400;600;700&family=Inter:wght@400;500&display=swap'); */
+
+/* Tailwind v4 Theme Tokens */
+@theme {
+  /* Brand Primary */
+  --color-primary: #2E7D32;
+  --color-primary-light: #4CAF50;
+  --color-primary-dark: #1B5E20;
+
+  /* Secondary Colors */
+  --color-secondary: #8D6E63;
+  --color-secondary-light: #A1887F;
+  --color-secondary-dark: #5D4037;
+
+  /* Accent Colors */
+  --color-accent: #F9A825;
+  --color-accent-hover: #F57F17;
+  --color-accent-soft: #FFEE58;
+
+  /* Backgrounds */
+  --color-bg: #FAFAF7;
+  --color-surface: #FFFFFF;
+  --color-muted-bg: #F0EDE6;
+
+  /* Text Colors */
+  --color-text-heading: #1A1A1A;
+  --color-text-body: #3A3A3A;
+  --color-text-muted: #6D6D6D;
+
+  /* Fonts */
+  --font-heading: "Poppins", "Montserrat", sans-serif;
+  --font-body: "Inter", "Source Sans Pro", sans-serif;
+
+  /* Typography scale */
+  /* --text-h1: 48px;
+  --text-h2: 32px;
+  --text-h3: 24px;
+  --text-body-lg: 18px;
+  --text-body: 16px;
+  --text-small: 14px; */
+
+  /* Breakpoints (Tailwind already supports responsive prefixes) */
+  /* Use sm: md: lg: xl: for responsiveness */
+}
