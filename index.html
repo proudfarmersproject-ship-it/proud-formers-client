@@ -11,6 +11,16 @@
       rel="stylesheet"
     />
     <title>proud-formers-client</title>
+    <script>
+      // Prevent theme flicker before React loads
+      (function () {
+        const path = window.location.pathname;
+        const isAdmin = path.startsWith("/admin");
+        document.documentElement.classList.add(
+          isAdmin ? "admin-theme" : "user-theme"
+        );
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

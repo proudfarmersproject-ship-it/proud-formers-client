@@ -1,0 +1,415 @@
+{
+  "categories": [
+    {
+      "id": "C1",
+      "name": "Organic Grains",
+      "description": "Premium quality naturally grown grains including rice, wheat, and millets.",
+      "created_at": "2023-01-15T08:30:00Z",
+      "meta_info": {
+        "product_count": 45,
+        "is_featured": true
+      }
+    },
+    {
+      "id": "C2",
+      "name": "Cold-Pressed Oils",
+      "description": "Oils extracted using traditional wood-pressing methods to retain nutrients.",
+      "created_at": "2023-02-10T11:20:00Z",
+      "meta_info": {
+        "product_count": 12,
+        "is_featured": false
+      }
+    },
+    {
+      "id": "C3",
+      "name": "Farm Fresh Spices",
+      "description": "Pure, unadulterated ground and whole spices sourced directly from local farmers.",
+      "created_at": "2023-03-05T09:45:00Z",
+      "meta_info": {
+        "product_count": 89,
+        "is_featured": true
+      }
+    },
+    {
+      "id": "C4",
+      "name": "Natural Sweeteners",
+      "description": "Healthy alternatives to sugar including raw honey, jaggery, and stevia.",
+      "created_at": "2023-04-12T14:10:00Z",
+      "meta_info": {
+        "product_count": 22,
+        "is_featured": false
+      }
+    },
+    {
+      "id": "C5",
+      "name": "Dry Fruits & Nuts",
+      "description": "High-quality energy-boosting snacks including almonds, walnuts, and raisins.",
+      "created_at": "2023-05-20T10:00:00Z",
+      "meta_info": {
+        "product_count": 34,
+        "is_featured": true
+      }
+    }
+  ],
+  "products": [
+    {
+      "name": "Premium Basmati Rice",
+      "description": "Long-grain aged aromatic basmati rice, perfect for biryani and pulao.",
+      "stock_quantity": 1000,
+      "stock_unit": "Kg",
+      "is_active": true,
+      "category_id": "C1",
+      "product_variants": [
+        {
+          "id": "PV1",
+          "variant_name": "5 Kg Bag",
+          "variant_price": 12.5,
+          "variant_quantity": 5,
+          "quantity_unit": "Kg"
+        },
+        {
+          "id": "PV1",
+          "variant_name": "2 Kg Bag",
+          "variant_price": 2.5,
+          "variant_quantity": 2,
+          "quantity_unit": "Kg"
+        }
+      ],
+      "product_images": [
+        {
+          "id": "PIM1",
+          "image_path": "/images/products/rice-front.jpg",
+          "alt_text": "Basmati Rice Front View",
+          "is_primary": true
+        }
+      ],
+      "categorie_details": {
+        "id": "C1",
+        "name": "Organic Grains",
+        "description": "Premium quality naturally grown grains including rice, wheat, and millets."
+      },
+      "id": "P001"
+    },
+    {
+      "id": "P002",
+      "name": "Cold Pressed Sunflower Oil",
+      "description": "100% pure sunflower oil extracted using traditional cold press methods.",
+      "stock_quantity": 300,
+      "stock_unit": "lt",
+      "created_at": "2023-12-01T12:00:00Z",
+      "updated_at": "2023-12-01T12:00:00Z",
+      "is_active": true,
+      "category_id": "C3",
+      "product_variants": [
+        {
+          "id": "PV3",
+          "variant_name": "1 Litre Bottle",
+          "variant_price": 4.5,
+          "variant_quantity": 1,
+          "quantity_unit": "L"
+        },
+        {
+          "id": "PV4",
+          "variant_name": "5 Litre Can",
+          "variant_price": 21,
+          "variant_quantity": 5,
+          "quantity_unit": "L"
+        },
+        {
+          "id": "PV2",
+          "variant_name": "2 Litre Can",
+          "variant_price": 13.5,
+          "variant_quantity": 2,
+          "quantity_unit": "L"
+        }
+      ],
+      "product_images": [
+        {
+          "id": "PIM3",
+          "image_path": "/images/products/oil-1l.jpg",
+          "alt_text": "Sunflower Oil 1L Bottle",
+          "is_primary": true
+        },
+        {
+          "id": "PIM1",
+          "image_path": "blob:http://localhost:5173/3826f348-6a57-4999-81ef-94ec85831da8",
+          "alt_text": "",
+          "is_primary": false
+        }
+      ],
+      "categorie_details": {
+        "id": "C3",
+        "name": "Farm Fresh Spices",
+        "description": "Pure, unadulterated ground and whole spices sourced directly from local farmers."
+      }
+    },
+    {
+      "name": "Organic Turmeric Powder",
+      "description": "High-curcumin turmeric sourced directly from organic farms.",
+      "stock_quantity": 2000,
+      "stock_unit": "gm",
+      "is_active": true,
+      "category_id": "C2",
+      "created_at": "2023-12-01T12:00:00Z",
+      "updated_at": "2023-12-01T12:00:00Z",
+      "product_variants": [
+        {
+          "id": "PV5",
+          "variant_name": "250g Pouch",
+          "variant_price": 2.99,
+          "variant_quantity": 250,
+          "quantity_unit": "gm"
+        }
+      ],
+      "product_images": [
+        {
+          "id": "PIM4",
+          "image_path": "/images/products/turmeric-pack.jpg",
+          "alt_text": "Organic Turmeric Powder",
+          "is_primary": true
+        }
+      ],
+      "categorie_details": {
+        "id": "C2",
+        "name": "Cold-Pressed Oils",
+        "description": "Oils extracted using traditional wood-pressing methods to retain nutrients."
+      },
+      "id": "P003"
+    },
+    {
+      "name": "Whole Wheat Flour (Atta)",
+      "description": "Stone-ground whole wheat flour with high fiber content.",
+      "stock_quantity": 800,
+      "stock_unit": "gm",
+      "is_active": true,
+      "category_id": "C1",
+      "created_at": "2023-12-01T12:00:00Z",
+      "updated_at": "2023-12-01T12:00:00Z",
+      "product_variants": [
+        {
+          "id": "PV7",
+          "variant_name": "10 Kg Bag",
+          "variant_price": 150,
+          "variant_quantity": 10,
+          "quantity_unit": "mg"
+        },
+        {
+          "id": "PV1",
+          "variant_name": "1",
+          "variant_price": 20,
+          "variant_quantity": 1,
+          "quantity_unit": "gm"
+        }
+      ],
+      "product_images": [
+        {
+          "id": "PIM5",
+          "image_path": "/images/products/atta-bag.jpg",
+          "alt_text": "10kg Atta Bag",
+          "is_primary": true
+        },
+        {
+          "id": "PIM1",
+          "image_path": "blob:http://localhost:5173/6e5aef70-cd77-4b60-a7b0-12fecc46c5ed",
+          "alt_text": "",
+          "is_primary": false
+        },
+        {
+          "id": "PIM2",
+          "image_path": "blob:http://localhost:5173/9083eb1a-b485-4a75-8bdc-e66c01da2504",
+          "alt_text": "",
+          "is_primary": false
+        }
+      ],
+      "categorie_details": {
+        "id": "C1",
+        "name": "Organic Grains",
+        "description": "Premium quality naturally grown grains including rice, wheat, and millets."
+      },
+      "id": "P004"
+    },
+    {
+      "id": "P005",
+      "name": "Raw Wildflower Honey",
+      "description": "Unprocessed, farm-fresh honey collected from wildflowers.",
+      "category_id": "C4",
+      "is_active": true,
+      "created_at": "2023-12-01T12:00:00Z",
+      "updated_at": "2023-12-01T12:00:00Z",
+      "stock_quantity": 40,
+      "stock_unit": "other",
+      "product_variants": [
+        {
+          "id": "PV8",
+          "variant_name": "500ml Jar",
+          "variant_price": 9.99,
+          "variant_quantity": 500,
+          "quantity_unit": "ml"
+        }
+      ],
+      "product_images": [
+        {
+          "id": "PIM6",
+          "image_path": "/images/products/honey-jar.jpg",
+          "alt_text": "Wildflower Honey Glass Jar",
+          "is_primary": true
+        }
+      ],
+      "categorie_details": {
+        "id": "C4",
+        "name": "Breakfast & Spreads",
+        "description": "Healthy spreads, jams, and honey."
+      }
+    }
+  ],
+  "users": [
+    {
+      "id": "USR1",
+      "first_name": "Jagadessh",
+      "last_name": "Gandi",
+      "password_hash": "9djioncjbuiasj",
+      "email": "abcd@gmail.com",
+      "phone": "7387498352",
+      "role": "customer",
+      "created_at": "12-12-2025",
+      "addresses": [
+        {
+          "id": "AD1",
+          "full_name": "Jagadessh Gandi",
+          "phone": "7387498352",
+          "email": "abcd@gmail.com",
+          "address_line1": "Flat 201, Sunshine Apartments",
+          "address_line2": "Main Road",
+          "city": "Kadapa",
+          "pincode": "516001",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "id": "USR2",
+      "first_name": "Ananya",
+      "last_name": "Sharma",
+      "password_hash": "k8s2n9xmz0p1",
+      "email": "ananya.s@outlook.com",
+      "phone": "9844012345",
+      "role": "admin",
+      "created_at": "15-12-2025",
+      "addresses": [
+        {
+          "id": "AD2",
+          "full_name": "Ananya Sharma",
+          "phone": "9844012345",
+          "email": "ananya.s@outlook.com",
+          "address_line1": "H-54, Sector 15",
+          "address_line2": "Near Metro Station",
+          "city": "Noida",
+          "pincode": "201301",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "id": "USR3",
+      "first_name": "Rahul",
+      "last_name": "Verma",
+      "password_hash": "v3rm4_secure_pass",
+      "email": "rahul.v@gmail.com",
+      "phone": "8877665544",
+      "role": "customer",
+      "created_at": "18-12-2025",
+      "addresses": [
+        {
+          "id": "AD3",
+          "full_name": "Rahul Verma (Office)",
+          "phone": "8877665544",
+          "email": "rahul.v@gmail.com",
+          "address_line1": "Tech Park North",
+          "address_line2": "Whitefield",
+          "city": "Bangalore",
+          "pincode": "560066",
+          "is_default": false
+        },
+        {
+          "id": "AD4",
+          "full_name": "Rahul Verma (Home)",
+          "phone": "8877665533",
+          "email": "rahul.v@gmail.com",
+          "address_line1": "Gokul Residency",
+          "address_line2": "Indiranagar",
+          "city": "Bangalore",
+          "pincode": "560038",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "id": "USR4",
+      "first_name": "Priya",
+      "last_name": "Nair",
+      "password_hash": "priy4_n4ir_2025",
+      "email": "priya.n@yahoo.com",
+      "phone": "9900112233",
+      "role": "customer",
+      "created_at": "20-12-2025",
+      "addresses": [
+        {
+          "id": "AD5",
+          "full_name": "Priya Nair",
+          "phone": "9900112233",
+          "email": "priya.n@yahoo.com",
+          "address_line1": "34/A Malabar Hill",
+          "address_line2": "Near Coast Guard",
+          "city": "Mumbai",
+          "pincode": "400006",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "id": "USR5",
+      "first_name": "Suresh",
+      "last_name": "Reddy",
+      "password_hash": "sr3ddy_hash_77",
+      "email": "suresh.reddy@protonmail.com",
+      "phone": "7011223344",
+      "role": "customer",
+      "created_at": "22-12-2025",
+      "addresses": [
+        {
+          "id": "AD6",
+          "full_name": "Suresh Reddy",
+          "phone": "7011223344",
+          "email": "suresh.reddy@protonmail.com",
+          "address_line1": "Phase 2, Jubilee Hills",
+          "address_line2": "Road No 45",
+          "city": "Hyderabad",
+          "pincode": "500033",
+          "is_default": true
+        }
+      ]
+    },
+    {
+      "id": "USR1766926198849",
+      "first_name": "Venkat",
+      "last_name": "Testing",
+      "email": "testing@gmail.com",
+      "phone": "9440653107",
+      "role": "customer",
+      "password": "Testing@123",
+      "addresses": [
+        {
+          "id": "AD1766926198849",
+          "full_name": "Venkat Testing",
+          "phone": "9440653107",
+          "email": "testing@gmail.com",
+          "address_line1": "101-2",
+          "address_line2": "",
+          "city": "Kadapa",
+          "pincode": "500215",
+          "is_default": true
+        }
+      ]
+    }
+  ]
+}
