@@ -8,6 +8,8 @@ export const useAdminCustomerStore = create((set, get) => ({
 
   customersData: [],
   selectedCustomer: null,
+  customerOrders: [],
+  customerCart: null,
   loading: false,
   error: null,
   successMessage: null,
@@ -95,6 +97,40 @@ export const useAdminCustomerStore = create((set, get) => ({
       }
     } catch (err) {
       set({ error: "Delete failed", loading: false });
+    }
+  },
+
+  // 1. FETCH ORDERS BY CUSTOMER ID
+  fetchCustomerOrders: async (customerId) => {
+    set({ loading: true, error: null, customerOrders: [] });
+    try {
+      // Assuming your API supports filtering orders by customer_id
+      const res = await axios.get(
+        `${baseUrl}/orders?customer_id=${customerId}`
+      );
+      if (res.status === 200) {
+        // Handle both direct arrays or nested objects
+        const data = Array.isArray(res.data) ? res.data : res.data.orders || [];
+        set({ customerOrders: data, loading: false });
+      }
+    } catch (err) {
+      set({ error: "Failed to load customer orders", loading: false });
+    }
+  },
+
+  // 2. FETCH CART BY USER ID
+  fetchCustomerCart: async (userId) => {
+    set({ loading: true, error: null, customerCart: null });
+    try {
+      // Fetches the specific cart for the user
+      const res = await axios.get(`${baseUrl}/carts?user_id=${userId}`);
+      if (res.status === 200) {
+        // Carts usually return a single object or an array with one item
+        const data = Array.isArray(res.data) ? res.data[0] : res.data;
+        set({ customerCart: data, loading: false });
+      }
+    } catch (err) {
+      set({ error: "Failed to load customer cart", loading: false });
     }
   },
 

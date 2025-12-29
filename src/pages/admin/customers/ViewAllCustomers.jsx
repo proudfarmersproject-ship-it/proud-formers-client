@@ -3,11 +3,15 @@ import { useState, useMemo, useEffect } from "react";
 import {
   Plus,
   Search,
-  ChevronDown,
   Eye,
   Trash2,
   AlertCircle,
   RefreshCw,
+  User,
+  ShieldCheck,
+  FilterX,
+  Mail,
+  Smartphone,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import Pagination from "../../../components/admin/Pagination";
@@ -16,8 +20,9 @@ import { useAdminCustomerStore } from "../../../store/admin/AdminCustomerStore";
 import AdminHeaderWrapper from "../../../components/admin/AdminHeaderWrapper";
 
 const wrapperData = {
-  title: "List Customers",
-  description: "These are the list of all registered users",
+  title: "Customer Directory",
+  description:
+    "Manage your registered users, review their roles, and access dossiers.",
   breadcrumb: [
     { label: "Dashboard", to: "/admin" },
     { label: "Customers", to: "/admin/customers" },
@@ -27,9 +32,9 @@ const wrapperData = {
 export default function ViewAllCustomers() {
   const [search, setSearch] = useState("");
   const [role, setRole] = useState("all");
-  // --- STATE AND CORE LOGIC ---
   const [perPage, setPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
+
   const {
     customersData,
     successMessage,
@@ -39,6 +44,7 @@ export default function ViewAllCustomers() {
     loading,
     clearStatus,
   } = useAdminCustomerStore();
+
   const loadData = async () => {
     try {
       await fetchCustomers();
@@ -46,62 +52,66 @@ export default function ViewAllCustomers() {
       console.error("Fetch Error:", err);
     }
   };
+
   useEffect(() => {
     loadData();
   }, []);
 
-  /* ---------------- Filter ---------------- */
-  // FIX 2: Safe Filter Logic
   const filtered = useMemo(() => {
-    // Ensure customersData is an array before filtering
     if (!customersData || !Array.isArray(customersData)) return [];
 
     return customersData.filter((u) => {
-      // Use fallback empty strings to prevent "toLowerCase of undefined" errors
-      const firstName = u?.first_name || "";
-      const lastName = u?.last_name || "";
-      const email = u?.email || "";
-      const phone = u?.phone || "";
-
-      const text = `${firstName} ${lastName} ${email} ${phone}`.toLowerCase();
+      const text = `${u?.first_name || ""} ${u?.last_name || ""} ${
+        u?.email || ""
+      } ${u?.phone || ""}`.toLowerCase();
       const matchesSearch = text.includes(search.toLowerCase());
       const matchesRole = role === "all" || u.role === role;
-
       return matchesSearch && matchesRole;
     });
   }, [customersData, search, role]);
 
-  /* ---------------- Pagination ---------------- */
+  const paginated = useMemo(() => {
+    const start = (currentPage - 1) * perPage;
+    return filtered.slice(start, start + perPage);
+  }, [filtered, currentPage, perPage]);
 
-  const start = (currentPage - 1) * perPage;
-  const paginated = filtered.slice(start, start + perPage);
-
-  const handleDelete = (user) => {
-    if (!confirm(`Delete user ${user.first_name}?`)) return;
-    console.log("Delete user", user.id);
+  const handleDelete = async (user) => {
+    if (
+      window.confirm(
+        `Are you sure you want to delete ${user.first_name}? This action cannot be undone.`
+      )
+    ) {
+      await deleteCustomer(user.id);
+    }
   };
+
   const resetFilters = () => {
     setRole("all");
     setSearch("");
+    setCurrentPage(1);
   };
 
+  // Helper to get initials for Avatar
+  const getInitials = (f, l) => `${f?.[0] || ""}${l?.[0] || ""}`.toUpperCase();
+
   return (
-    <>
-      {/* {successMessage && (
-            <StatusModal
-              message={successMessage}
-              type={"success"}
-              onClose={clearStatus}
-            />
-          )} */}
+    <div className="pb-10">
       <AdminHeaderWrapper {...wrapperData} />
 
+      {(successMessage || error) && (
+        <StatusModal
+          message={successMessage || error}
+          type={successMessage ? "success" : "error"}
+          onClose={clearStatus}
+        />
+      )}
+
       <div className="space-y-6">
-        {/* Filters */}
-        <div className="bg-white p-4 rounded-2xl shadow flex flex-col md:flex-row gap-4 justify-between">
-          <div className="flex flex-wrap gap-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+        {/* --- SMART FILTERS --- */}
+        <div className="bg-white p-5 rounded-3xl shadow-sm border border-gray-100 flex flex-col md:flex-row gap-4 items-center justify-between">
+          <div className="flex flex-1 w-full md:w-auto gap-4">
+            <div className="relative flex-1 max-w-md group">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-primary transition-colors" />
               <input
                 type="text"
                 value={search}
@@ -109,149 +119,218 @@ export default function ViewAllCustomers() {
                   setSearch(e.target.value);
                   setCurrentPage(1);
                 }}
-                placeholder="Search name / email / phone"
-                className="pl-10 pr-3 py-2 border-2 rounded-xl w-64 focus:ring-2 focus:ring-primary bg-white focus:outline-none border-[var(--color-border-color)]"
+                placeholder="Search name, email, or phone..."
+                className="w-full pl-11 pr-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-2xl text-sm font-medium focus:ring-2 focus:ring-primary/20 outline-none transition-all"
               />
             </div>
 
             <select
               value={role}
-              onChange={(e) => setRole(e.target.value)}
-              className="border-2 px-3 py-2 rounded-xl focus:ring-2 focus:ring-primary bg-white focus:outline-none border-[var(--color-border-color)]"
+              onChange={(e) => {
+                setRole(e.target.value);
+                setCurrentPage(1);
+              }}
+              className="px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-2xl text-sm font-bold text-gray-600 focus:ring-2 focus:ring-primary/20 outline-none cursor-pointer appearance-none min-w-[140px]"
             >
               <option value="all">All Roles</option>
-              <option value="customer">Customer</option>
-              <option value="admin">Admin</option>
+              <option value="customer">Customers</option>
+              <option value="admin">Admins</option>
             </select>
           </div>
 
           <Link
             to="/admin/customers/new"
-            className="bg-primary text-white px-4 py-2 rounded-xl flex items-center gap-2"
+            className="w-full md:w-auto bg-primary hover:bg-primary-dark text-white px-6 py-3.5 rounded-2xl font-black text-sm flex items-center justify-center gap-2 shadow-lg shadow-primary/20 transition-all active:scale-95"
           >
-            <Plus size={18} /> Add Customer
+            <Plus size={18} /> New Registration
           </Link>
         </div>
 
-        {/* Table */}
-        <div className="bg-white p-4 rounded-2xl shadow ">
-          <div className="overflow-x-auto py-2">
-            <table className="w-full min-w-[800px]">
+        {/* --- DATA TABLE --- */}
+        {/* <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden"> */}
+        <div className="bg-white p-4 rounded-3xl shadow mt-6 border-gray-100">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-[var(--color-muted-bg)] text-left">
-                  <th className="p-3">Id</th>
-                  <th className="p-3">Name</th>
-                  <th className="p-3">Email</th>
-                  <th className="p-3">Phone</th>
-                  <th className="p-3">Created</th>
-                  <th className="p-3 text-center">Actions</th>
+                <tr className="bg-gray-50 text-left text-gray-600 text-sm uppercase tracking-wider border-b">
+                  <th className="p-4 font-bold">Customer</th>
+                  <th className="p-4 font-bold">Contact Info</th>
+                  <th className="p-4 font-bold">Joined Date</th>
+                  <th className="p-4 font-bold text-center">Actions</th>
                 </tr>
               </thead>
-              <tbody>
-                {/* 1. ERROR STATE */}
+              <tbody className="divide-y divide-gray-300">
+                {/* Error State */}
                 {error ? (
                   <tr>
-                    <td colSpan={6} className="py-20">
-                      <div className="flex flex-col items-center justify-center text-red-500 gap-2">
-                        <AlertCircle size={48} />
-                        <p className="font-semibold">{error}</p>
+                    <td colSpan={4} className="py-20 text-center">
+                      <div className="inline-flex flex-col items-center p-8 bg-red-50 rounded-3xl border border-red-100 text-red-600">
+                        <AlertCircle size={40} className="mb-3" />
+                        <p className="font-black text-lg">
+                          System synchronization failed
+                        </p>
+                        <p className="text-sm opacity-80 mb-4">{error}</p>
                         <button
-                          onClick={() => loadData()} // Calls the customer specific fetch
-                          className="mt-2 flex items-center gap-2 text-sm bg-red-50 px-4 py-2 rounded-lg hover:bg-red-100 transition"
+                          onClick={loadData}
+                          className="flex items-center gap-2 bg-red-600 text-white px-6 py-2.5 rounded-xl font-bold shadow-lg shadow-red-200"
                         >
-                          <RefreshCw size={16} /> Try Again
+                          <RefreshCw size={16} /> Force Reload
                         </button>
                       </div>
                     </td>
                   </tr>
-                ) : /* 2. LOADING STATE */
-                loading ? (
+                ) : loading ? (
+                  // Loading State
+                  [...Array(5)].map((_, i) => (
+                    <tr key={i} className="animate-pulse">
+                      <td colSpan={4} className="px-6 py-6">
+                        <div className="h-12 bg-gray-100 rounded-2xl w-full"></div>
+                      </td>
+                    </tr>
+                  ))
+                ) : paginated.length === 0 ? (
+                  // Empty State
                   <tr>
-                    <td colSpan={6} className="py-20">
-                      <div className="flex flex-col items-center justify-center gap-4">
-                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-                        <p className="text-gray-500 animate-pulse font-medium">
-                          Loading customer database...
+                    <td colSpan={4} className="py-24 text-center">
+                      <div className="flex flex-col items-center text-gray-400">
+                        <FilterX size={64} className="mb-4 opacity-10" />
+                        <p className="text-xl font-black text-gray-800">
+                          No matches found
                         </p>
-                      </div>
-                    </td>
-                  </tr>
-                ) : /* 3. NO RECORDS FOUND (EMPTY STATE) */
-                paginated.length === 0 ? (
-                  <tr>
-                    <td colSpan={6} className="py-20">
-                      <div className="flex flex-col items-center justify-center text-gray-400 gap-2">
-                        <Search size={48} className="opacity-20" />
-                        <p className="text-lg">
-                          No customers found matching your search
+                        <p className="text-sm font-medium mt-1">
+                          Try adjusting your filters or search keywords.
                         </p>
                         <button
                           onClick={resetFilters}
-                          className="text-primary font-medium underline cursor-pointer"
+                          className="mt-4 text-primary font-black text-xs uppercase tracking-widest hover:underline"
                         >
-                          Clear all filters
+                          Clear Global Filters
                         </button>
                       </div>
                     </td>
                   </tr>
                 ) : (
-                  /* 4. SUCCESS STATE (DATA LIST) */
+                  // Success State
                   paginated.map((u) => (
                     <tr
                       key={u.id}
-                      className="border-b odd:bg-white even:bg-gray-50 hover:bg-gray-100 transition-colors"
+                      className="hover:bg-gray-50/80 transition-colors group"
                     >
-                      <td className="p-3 font-medium text-gray-600">#{u.id}</td>
-                      <td className="p-3">
-                        <div className="flex flex-col">
-                          <span className="font-bold text-gray-800">
-                            {u.first_name} {u.last_name}
-                          </span>
-                          <span className="text-xs text-gray-400 uppercase tracking-tighter">
-                            {u.role}
-                          </span>
+                      <td className="px-6 py-5">
+                        <div className="flex items-center gap-4">
+                          <div
+                            className={`w-11 h-11 rounded-2xl flex items-center justify-center font-black text-sm shadow-sm transition-transform group-hover:scale-110 
+                            ${
+                              u.role === "admin"
+                                ? "bg-purple-100 text-purple-600"
+                                : "bg-primary/10 text-primary"
+                            }`}
+                          >
+                            {getInitials(u.first_name, u.last_name)}
+                          </div>
+                          <div>
+                            <p className="font-black text-gray-800 text-sm">
+                              {u.first_name} {u.last_name}
+                            </p>
+                            <div className="flex items-center gap-1.5 mt-0.5">
+                              {u.role === "admin" ? (
+                                <ShieldCheck
+                                  size={12}
+                                  className="text-purple-500"
+                                />
+                              ) : (
+                                <User size={12} className="text-gray-400" />
+                              )}
+                              <span
+                                className={`text-[10px] font-black uppercase tracking-tighter ${
+                                  u.role === "admin"
+                                    ? "text-purple-500"
+                                    : "text-gray-400"
+                                }`}
+                              >
+                                {u.role}
+                              </span>
+                            </div>
+                          </div>
                         </div>
                       </td>
-                      <td className="p-3 text-gray-600">{u.email}</td>
-                      <td className="p-3 text-gray-600">{u.phone}</td>
-                      <td className="p-3 text-gray-500">
-                        {/* Formats date nicely if it's a valid string */}
-                        {u.created_at || "N/A"}
+                      <td className="p-5">
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-2 text-gray-500">
+                            <Mail size={14} className="shrink-0" />
+                            <span className="text-xs font-bold">{u.email}</span>
+                          </div>
+                          <div className="flex items-center gap-2 text-gray-400">
+                            <Smartphone size={14} className="shrink-0" />
+                            <span className="text-xs font-medium">
+                              {u.phone || "No phone listed"}
+                            </span>
+                          </div>
+                        </div>
                       </td>
-                      <td className="p-3">
-                        <div className="flex justify-center gap-3">
+                      <td className="p-5">
+                        <p className="text-xs font-black text-gray-500 uppercase">
+                          {u.created_at || "Historical Data"}
+                        </p>
+                        <p className="text-[10px] text-gray-300 font-bold mt-0.5 tracking-widest">
+                          ID: #{u.id?.slice(-6)}
+                        </p>
+                      </td>
+                      <td className="p-5">
+                        <div className="flex justify-center items-center gap-2">
                           <Link
                             to={`/admin/customers/${u.id}`}
-                            className="text-blue-600 hover:bg-blue-50 p-2 rounded-lg border border-blue-100 transition shadow-sm"
-                            title="View Details"
+                            className="text-blue-600 hover:bg-blue-50 p-2 rounded-lg border border-blue-100"
+                            title="View Dossier"
+                          >
+                            <Eye size={20} />
+                          </Link>
+                          <button
+                            onClick={() => handleDelete(u)}
+                            className="text-red-600 hover:bg-red-50 p-2 rounded-lg border border-red-100 cursor-pointer"
+                            title="Deactivate Account"
+                          >
+                            <Trash2 size={20} />
+                          </button>
+                        </div>
+                      </td>
+                      {/* <td className="px-6 py-5">
+                        <div className="flex justify-center items-center gap-2">
+                          <Link
+                            to={`/admin/customers/${u.id}`}
+                            className="p-2.5 bg-gray-50 text-gray-400 hover:bg-blue-50 hover:text-blue-600 rounded-xl border border-transparent hover:border-blue-100 transition-all"
+                            title="View Dossier"
                           >
                             <Eye size={18} />
                           </Link>
                           <button
                             onClick={() => handleDelete(u)}
-                            className="text-red-600 hover:bg-red-50 p-2 rounded-lg border border-red-100 transition shadow-sm"
-                            title="Delete Customer"
+                            className="p-2.5 bg-gray-50 text-gray-400 hover:bg-red-50 hover:text-red-600 rounded-xl border border-transparent hover:border-red-100 transition-all"
+                            title="Deactivate Account"
                           >
                             <Trash2 size={18} />
                           </button>
                         </div>
-                      </td>
+                      </td> */}
                     </tr>
                   ))
                 )}
               </tbody>
             </table>
           </div>
-          {/* Pagination */}
-          <Pagination
-            totalItems={filtered.length}
-            currentPage={currentPage}
-            perPage={perPage}
-            onPageChange={setCurrentPage} // Pass the setter function
-            onPerPageChange={setPerPage} // pass the setter function
-          />
+
+          {/* --- FOOTER / PAGINATION --- */}
+          <div className="px-6 py-4 bg-gray-50/30 border-t border-gray-100">
+            <Pagination
+              totalItems={filtered.length}
+              currentPage={currentPage}
+              perPage={perPage}
+              onPageChange={setCurrentPage}
+              onPerPageChange={setPerPage}
+            />
+          </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }

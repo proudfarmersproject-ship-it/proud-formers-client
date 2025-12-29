@@ -1,145 +1,174 @@
-// src/components/admin/orders/OrderCartSection.jsx
-import { useState, useMemo } from "react";
-import Pagination from "../../../components/admin/Pagination";
+import { ShoppingCart, Tag, ReceiptText, PackageCheck } from "lucide-react";
 
-export default function OrderCartSection({
-  cartData = [],
-  onViewVariant,
-}) {
-  /* ---------------- FILTER & SORT ---------------- */
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [sortBy, setSortBy] = useState("price_desc");
+export default function OrderCartSection({ cartData = {}, onViewVariant }) {
+  const items = cartData?.cart_item_nested_fields || [];
 
-  /* ---------------- PAGINATION ---------------- */
-  const [currentPage, setCurrentPage] = useState(1);
-  const [perPage, setPerPage] = useState(5);
-
-  /* ---------------- FILTER + SORT ---------------- */
-  const filteredItems = useMemo(() => {
-    let data = [...cartData];
-
-    if (statusFilter !== "all") {
-      data = data.filter((i) => i.status === statusFilter);
-    }
-
-    data.sort((a, b) => {
-      const priceA = a.subtotal ?? 0;
-      const priceB = b.subtotal ?? 0;
-
-      if (sortBy === "price_desc") return priceB - priceA;
-      if (sortBy === "price_asc") return priceA - priceB;
-      if (sortBy === "qty_desc") return b.quantity - a.quantity;
-      if (sortBy === "qty_asc") return a.quantity - b.quantity;
-      return 0;
-    });
-
-    return data;
-  }, [statusFilter, sortBy]);
-
-  /* ---------------- PAGINATION LOGIC ---------------- */
-
-  const paginatedItems = filteredItems.slice(
-    (currentPage - 1) * perPage,
-    currentPage * perPage
-  );
-
-  /* ---------------- HANDLERS ---------------- */
-  const resetPage = () => setCurrentPage(1);
+  if (!items.length) {
+    return (
+      <div className="bg-white p-12 rounded-3xl border-2 border-dashed border-gray-100 flex flex-col items-center justify-center text-gray-400">
+        <ShoppingCart size={48} className="mb-4 opacity-10" />
+        <p className="font-medium">The customer's cart is empty</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="bg-white p-6 rounded-2xl shadow space-y-4">
-      <h2 className="text-lg font-semibold">Cart Items</h2>
+    <div className="grid lg:grid-cols-3 gap-6">
+      {/* LEFT: PRODUCT VISUALIZATION LIST (2 Columns wide) */}
+      <div className="lg:col-span-2 space-y-4">
+        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+          <div className="px-6 py-5 border-b border-gray-50 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 bg-blue-50 text-blue-600 rounded-xl">
+                <PackageCheck size={22} />
+              </div>
+              <div>
+                <h2 className="text-lg font-bold text-gray-900">
+                  Cart Contents
+                </h2>
+                <p className="text-xs text-gray-500">
+                  {items.length} items staged for checkout
+                </p>
+              </div>
+            </div>
+          </div>
 
-      {/* FILTERS */}
-      <div className="flex flex-wrap gap-3">
-        <select
-          value={statusFilter}
-          onChange={(e) => {
-            setStatusFilter(e.target.value);
-            resetPage();
-          }}
-          className="p-2 border-2 rounded-xl focus:ring-2 focus:ring-primary-light bg-white focus:outline-none border-[var(--color-border-color)]"
-        >
-          <option value="all">All Status</option>
-          <option value="active">Active</option>
-          <option value="out_of_stock">Out of Stock</option>
-          <option value="inactive">Inactive</option>
-        </select>
+          <div className="divide-y divide-gray-50 max-h-[600px] overflow-y-auto custom-scrollbar">
+            {items.map((item) => (
+              <div
+                key={item.id}
+                className="p-5 hover:bg-gray-50/80 transition-all group"
+              >
+                <div className="flex gap-5 items-center">
+                  {/* Thumbnail */}
+                  <div className="h-20 w-20 flex-shrink-0 rounded-2xl overflow-hidden border border-gray-100 bg-gray-50">
+                    <img
+                      src={
+                        item.product_variant?.product?.primary_image?.url ||
+                        "/placeholder.png"
+                      }
+                      alt="Product"
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
 
-        <select
-          value={sortBy}
-          onChange={(e) => {
-            setSortBy(e.target.value);
-            resetPage();
-          }}
-          className="p-2 border-2 rounded-xl focus:ring-2 focus:ring-primary-light bg-white focus:outline-none border-[var(--color-border-color)]"
-        >
-          <option value="price_desc">Price: High → Low</option>
-          <option value="price_asc">Price: Low → High</option>
-          <option value="qty_desc">Quantity: High → Low</option>
-          <option value="qty_asc">Quantity: Low → High</option>
-        </select>
+                  {/* Info */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <h4
+                          className="font-bold text-gray-900 truncate hover:text-primary cursor-pointer transition-colors"
+                          onClick={() =>
+                            onViewVariant?.(item.product_variant?.id)
+                          }
+                        >
+                          {item.product_variant?.product?.name}
+                        </h4>
+                        <p className="text-xs text-gray-500 font-medium">
+                          {item.product_variant?.variant_name}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-xs text-gray-400">Unit Price</p>
+                        <p className="text-sm font-semibold text-gray-700">
+                          ₹{item.product_variant?.price}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between mt-3">
+                      <div className="flex items-center gap-3">
+                        <span className="text-[10px] bg-gray-100 text-gray-600 px-2 py-1 rounded-md font-bold uppercase tracking-tight">
+                          SKU: {item.product_variant?.sku}
+                        </span>
+                        <span className="text-[10px] text-gray-400">|</span>
+                        <span className="text-xs font-bold text-gray-700">
+                          Qty: {item.quantity}
+                        </span>
+                      </div>
+                      <div className="flex flex-col items-end">
+                        <p className="text-xs text-gray-400">Total</p>
+                        <p className="text-base font-black text-gray-900">
+                          ₹{item.After_discounted_total}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
 
-      {/* TABLE */}
-      <div className="overflow-x-auto">
-        <table className="w-full border">
-          <thead className="bg-gray-100">
-            <tr>
-              <th className="p-3 text-left">id</th>
-              <th className="p-3 text-left">Variant</th>
-              <th className="p-3 text-left">SKU</th>
-              <th className="p-3 text-left">Unit</th>
-              <th className="p-3 text-left">Price</th>
-              <th className="p-3 text-left">Qty</th>
-              <th className="p-3 text-left">Subtotal</th>
-              <th className="p-3 text-left">Status</th>
-              <th className="p-3 text-left">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {paginatedItems.length === 0 && (
-              <tr>
-                <td colSpan={8} className="p-4 text-center text-gray-500">
-                  No cart items found
-                </td>
-              </tr>
+      {/* RIGHT: FINANCIAL SUMMARY BREAKUP */}
+      <div className="lg:col-span-1">
+        <div className="bg-[#1e293b] rounded-3xl shadow-xl p-8 text-white sticky top-6">
+          <div className="flex items-center gap-3 mb-8">
+            <div className="p-2 bg-white/10 rounded-lg">
+              <ReceiptText size={20} className="text-blue-400" />
+            </div>
+            <h3 className="font-bold text-lg">Order Summary</h3>
+          </div>
+
+          <div className="space-y-4">
+            <div className="flex justify-between items-center text-gray-400">
+              <span className="text-sm">Subtotal</span>
+              <span className="font-medium text-white font-mono">
+                ₹{cartData.actual_amount}
+              </span>
+            </div>
+
+            <div className="flex justify-between items-center text-gray-400">
+              <span className="text-sm">Item Discounts</span>
+              <span className="font-medium text-green-400 font-mono">
+                -₹{cartData.total_discount}
+              </span>
+            </div>
+
+            {cartData.coupon_active && (
+              <div className="flex flex-col gap-2 p-3 bg-white/5 rounded-2xl border border-white/10 border-dashed">
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center gap-2 text-blue-400">
+                    <Tag size={14} />
+                    <span className="text-xs font-bold uppercase">
+                      {cartData.coupon_code}
+                    </span>
+                  </div>
+                  <span className="text-sm font-bold text-blue-400">
+                    -₹{cartData.coupon_discount}
+                  </span>
+                </div>
+              </div>
             )}
 
-            {paginatedItems.map((item) => (
-              <tr key={item.id} className="border-t">
-                <td className="p-3">{item.id}</td>
-                <td className="p-3">{item.variant_name ?? "N/A"}</td>
-                <td className="p-3">{item.sku ?? "-"}</td>
-                <td className="p-3">{item.unit ?? "-"}</td>
-                <td className="p-3">₹{item.price ?? 0}</td>
-                <td className="p-3">{item.quantity}</td>
-                <td className="p-3 font-medium">
-                  ₹{(item.price ?? 0) * item.quantity}
-                </td>
-                <td className="p-3 capitalize">{item.status ?? "-"}</td>
-                <td className="p-3">
-                  <button
-                    onClick={() => onViewVariant?.(item.id)}
-                    className="text-primary underline text-sm"
-                  >
-                    View
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            <div className="h-px bg-white/10 my-4"></div>
 
-      {/* PAGINATION */}
-      <Pagination
-        totalItems={filteredItems.length}
-        currentPage={currentPage}
-        perPage={perPage}
-        onPageChange={setCurrentPage} // Pass the setter function
-        onPerPageChange={setPerPage} // pass the setter function
-      />
+            <div className="flex flex-col gap-1">
+              <span className="text-xs text-gray-400 uppercase tracking-widest font-bold">
+                Total Payable
+              </span>
+              <div className="flex items-baseline gap-1">
+                <span className="text-4xl font-black text-white font-mono">
+                  ₹{cartData.dicounted_total_price}
+                </span>
+              </div>
+            </div>
+
+            {/* <button className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-2xl mt-6 transition-all shadow-lg shadow-blue-900/20 active:scale-95">
+              Proceed to Order
+            </button> */}
+          </div>
+
+          {/* Decorative element */}
+          <div className="mt-8 pt-8 border-t border-white/5 flex items-center justify-center gap-2 text-gray-500">
+            <PackageCheck size={14} />
+            <span className="text-[10px] uppercase tracking-widest font-bold text-center">
+              Admin Controlled Session
+            </span>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

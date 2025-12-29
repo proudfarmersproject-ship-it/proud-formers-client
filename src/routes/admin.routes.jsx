@@ -4,6 +4,7 @@ import Loader from "../components/admin/Loader";
 
 // Lazy imports
 const Dashboard = lazy(() => import("../pages/admin/Dashboard"));
+const Overview = lazy(() => import("../pages/admin/dashboard/Overview"));
 const AdminProfile = lazy(() => import("../pages/admin/profile/AdminProfile"));
 const AddNewProduct = lazy(() =>
   import("../pages/admin/products/AddNewProduct")
@@ -14,7 +15,6 @@ const ViewAllProducts = lazy(() =>
 const ProductDetails = lazy(() =>
   import("../pages/admin/products/ProductDetails")
 );
-const Categories = lazy(() => import("../pages/admin/Categories"));
 const AddNewCategory = lazy(() =>
   import("../pages/admin/categories/AddNewCategories")
 );
@@ -24,7 +24,6 @@ const ViewAllCategories = lazy(() =>
 const CategoryDetails = lazy(() =>
   import("../pages/admin/categories/CategorieDetails")
 );
-const Customers = lazy(() => import("../pages/admin/Customers"));
 const ViewAllCustomers = lazy(() =>
   import("../pages/admin/customers/ViewAllCustomers")
 );
@@ -34,10 +33,9 @@ const AddNewCustomer = lazy(() =>
 const CustomerDetails = lazy(() =>
   import("../pages/admin/customers/CustomerDetails")
 );
-const Orders = lazy(() => import("../pages/admin/Orders"));
+
 const ViewAllOrders = lazy(() => import("../pages/admin/orders/ViewAllOrders"));
 const OrderDetails = lazy(() => import("../pages/admin/orders/OrderDetails"));
-const Promotions = lazy(() => import("../pages/admin/Promotions"));
 const ViewAllPromotions = lazy(() =>
   import("../pages/admin/promotions/ViewAllPromotions")
 );
@@ -47,7 +45,6 @@ const CreateNewPromotion = lazy(() =>
 const PromotionDetails = lazy(() =>
   import("../pages/admin/promotions/PromotionDetails")
 );
-const Coupons = lazy(() => import("../pages/admin/Coupons"));
 const ViewAllCoupons = lazy(() =>
   import("../pages/admin/coupons/ViewAllCoupons")
 );
@@ -65,7 +62,8 @@ export const adminRoutes = {
       index: true,
       element: (
         <Suspense fallback={<Loader />}>
-          <Dashboard />
+          {/* <Dashboard /> */}
+          <Overview />
         </Suspense>
       ),
     },

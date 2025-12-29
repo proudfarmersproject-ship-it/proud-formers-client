@@ -39,8 +39,8 @@ export default function SideBar({ isOpen, setIsOpen }) {
       icon: LayoutDashboard,
       path: "/admin",
       sub: [
-        { label: "Products", icon: Eye, path: "/admin" },
-        { label: "orders", icon: Plus, path: "/admin/dashboard/orders" },
+        { label: "Overview", icon: Eye, path: "/admin" },
+        // { label: "orders", icon: Plus, path: "/admin/dashboard/orders" },
       ],
     },
   ];
@@ -101,18 +101,18 @@ export default function SideBar({ isOpen, setIsOpen }) {
         { label: "Add Coupon", icon: Plus, path: "/admin/coupons/new" },
       ],
     },
-    {
-      id: "health",
-      label: "System Health",
-      icon: Activity,
-      sub: [{ label: "View System Status", icon: Eye, path: "/admin/health" }],
-    },
-    {
-      id: "settings",
-      label: "Settings",
-      icon: Settings,
-      path: "/admin/settings",
-    },
+    // {
+    //   id: "health",
+    //   label: "System Health",
+    //   icon: Activity,
+    //   sub: [{ label: "View System Status", icon: Eye, path: "/admin/health" }],
+    // },
+    // {
+    //   id: "settings",
+    //   label: "Settings",
+    //   icon: Settings,
+    //   path: "/admin/settings",
+    // },
   ];
 
   return (
