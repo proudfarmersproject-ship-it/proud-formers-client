@@ -3,7 +3,6 @@ import Layout from "../layouts/admin/layout";
 import Loader from "../components/admin/Loader";
 
 // Lazy imports
-const Dashboard = lazy(() => import("../pages/admin/Dashboard"));
 const Overview = lazy(() => import("../pages/admin/dashboard/Overview"));
 const AdminProfile = lazy(() => import("../pages/admin/profile/AdminProfile"));
 const AddNewProduct = lazy(() =>
@@ -52,7 +51,7 @@ const AddNewCoupon = lazy(() => import("../pages/admin/coupons/AddNewCoupon"));
 const ViewCouponDetail = lazy(() =>
   import("../pages/admin/coupons/CouponDetails")
 );
-const SystemHealth = lazy(() => import("../pages/admin/SystemHealth"));
+// const SystemHealth = lazy(() => import("../pages/admin/SystemHealth"));
 
 export const adminRoutes = {
   path: "/admin",
@@ -260,7 +259,7 @@ export const adminRoutes = {
       path: "health",
       element: (
         <Suspense fallback={<Loader />}>
-          <SystemHealth />
+          {/* <SystemHealth /> */}\<div>System Health</div>
         </Suspense>
       ),
     },
